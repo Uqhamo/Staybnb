@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Staybnb.Models;
 using System.Diagnostics;
+using Staybnb.Models.ViewModels;
 
 namespace Staybnb.Controllers
 {
