@@ -46,9 +46,8 @@ namespace Staybnb.Controllers
         [HttpPost]
         public async Task<IActionResult> ReviewBooking(int bookingId, BookingStatus decision) {
             var booking = await _context.BookingRequests
-                               .Include(b => b.PropertYApplication)
-                              
-                               .FirstOrDefaultAsync(b => b.Id == bookingId && b.PropertyApplication == User.Identity.Name);
+                               .Include(b => b.PropertyApplication)
+                              .FirstOrDefaultAsync(b => b.Id == bookingId && b.PropertyApplication == User.Identity.Name);
             if (booking == null) return NotFound();
             booking.Status = decision;
             await _context.SaveChangesAsync();
@@ -58,8 +57,26 @@ namespace Staybnb.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> ConfigurationCheckIn(CheckInProcess config) {
-            var property = await _context.CheckInProcesses
-                    .FirstOrDefaultAsync(c => c.PropertyApplication == config.PropertyApplication);
+            var property = await _context.PropertYApplications
+                    .AnyAsync(p => p.Id == config.PropertyApplicationId && p.HostId == User.Identity.Name);
+            if (!property) return Unauthorized();
+
+            var existingConfig = await _context.CheckInProcesses
+                                 .FirstOrDefaultAsync(c => c.PropertyApplicationId == config.PropertyApplicationId);
+            if(existingConfig == null)
+            {
+                _context.CheckInProcesses.Add(config);
+            }
+            else
+            {
+                existingConfig.HouseRules = config.HouseRules;
+                existingConfig.RequiredIdUpload = config.RequiredIdUpload;
+                existingConfig.RequiresRentalAgreementSigned = config.RequiresRentalAgreementSigned;
+                existingConfig.CheckInInstructions = config.CheckInInstructions;
+
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index), new { propertyId = config.PropertyApplicationId });
 
         
         }
