@@ -2,7 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Staybnb.Data;
+using Microsoft.AspNetCore.Authorization;
+using Staybnb.Models.ViewModels;
+using Staybnb.Models;
 
 namespace Staybnb.Controllers
 {

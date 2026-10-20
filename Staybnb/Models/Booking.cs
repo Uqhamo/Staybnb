@@ -17,4 +17,6 @@
         public bool IsDocumentVerified { get; set; }
 
     }
+
+
 }

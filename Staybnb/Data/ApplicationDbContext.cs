@@ -13,6 +13,11 @@ namespace Staybnb.Data
         public DbSet<BookingRequest> BookingRequests { get; set; }
         public DbSet<CheckInProcess> CheckInProcesses { get; set; }
 
+        public DbSet<Property> Properties { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
+
+        public DbSet <ActivityLog> ActivityLogs { get; set; }
+
 
     }
 }

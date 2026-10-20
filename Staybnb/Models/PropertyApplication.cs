@@ -7,6 +7,8 @@ namespace Staybnb.Models
         public int Id { get; set; }
         [Required(ErrorMessage = "Title is required")]
         [StringLength(100)]
+
+        
         public string Title { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Description is required")]
@@ -21,9 +23,14 @@ namespace Staybnb.Models
         public string Address { get; set; } = string.Empty;
 
         public string HostId { get; set; } = string.Empty;
+        public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
+        public DateTime ReviewedBy { get; set; } = DateTime.UtcNow;
+        public DateTime? ReviewedAt {  get; set; } = DateTime.UtcNow;
         public ApplicationStatus Status { get; set; } = ApplicationStatus.Pending;
         public bool IsActive { get; set; } = false;
+       // public string Status { get; set; } = "Pending";
 
+        
         public List<PropertyImage> Images { get; set; } = new();
         public List<BookingRequest> BookingRequests { get; set; } = new();
         public CheckInProcess? CheckInConfig { get; set; }
