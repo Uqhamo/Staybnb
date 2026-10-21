@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations
+﻿using System.ComponentModel.DataAnnotations;
 namespace Staybnb.Models
 {
     public class PropertyApplication
@@ -24,7 +24,7 @@ namespace Staybnb.Models
 
         public string HostId { get; set; } = string.Empty;
         public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
-        public DateTime ReviewedBy { get; set; } = DateTime.UtcNow;
+        public string? ReviewedBy { get; set; } = string.Empty;
         public DateTime? ReviewedAt {  get; set; } = DateTime.UtcNow;
         public ApplicationStatus Status { get; set; } = ApplicationStatus.Pending;
         public bool IsActive { get; set; } = false;

@@ -1,0 +1,37 @@
+﻿@model List<Staybnb.Models.ViewModels.PendingApplicationViewModel>
+
+@{
+    ViewData["Title"] = "Pending Host Applications";
+}
+
+<h2>Pending Host Applications</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">There are no pending applications.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Applicant</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Model)
+            {
+                <tr>
+                    <td>@app.Email</td>
+                    <td>
+                        <form asp-action="ApproveApplication" method="post">
+                            <input type="hidden" name="ApplicationId" value="@app.ApplicationId" />
+                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

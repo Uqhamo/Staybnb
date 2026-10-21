@@ -56,9 +56,9 @@ namespace Staybnb.Controllers
                 }
             }
 
-            
-            
-            _co
+
+            return View(newProperty);
+
         }
 
         public IActionResult Index()

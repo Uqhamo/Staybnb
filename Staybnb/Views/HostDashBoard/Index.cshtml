@@ -1,0 +1,122 @@
+﻿@model Staybnb.Models.PropertyApplication
+@using Staybnb.Models
+
+@{
+    ViewData["Title"] = Model.Title;
+    var pending = Model.BookingRequests.Where(b => b.Status == BookingStatus.Pending).ToList();
+    var config = Model.CheckInConfig ?? new CheckInProcess { PropertyApplicationId = Model.Id };
+}
+
+<a asp-action="MyProperties" class="text-decoration-none">&larr; All properties</a>
+
+<div class="d-flex justify-content-between align-items-center my-3">
+    <div>
+        <h2 class="mb-0">@Model.Title</h2>
+        <span class="text-muted">@Model.Address</span>
+    </div>
+
+    <form asp-action="ToggleActive" method="post" class="d-flex align-items-center gap-2">
+        <input type="hidden" name="propertyId" value="@Model.Id" />
+        <span class="badge @(Model.IsActive ? "bg-success" : "bg-secondary")">
+            @(Model.IsActive ? "Listing is active" : "Listing is inactive")
+        </span>
+        <button type="submit" class="btn btn-outline-dark btn-sm">
+            @(Model.IsActive ? "Deactivate" : "Activate")
+        </button>
+    </form>
+</div>
+
+<ul class="nav nav-tabs mb-4" role="tablist">
+    <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#requests" type="button">
+            Booking requests
+            @if (pending.Any())
+            {
+                <span class="badge bg-danger ms-1">@pending.Count</span>
+            }
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#checkin" type="button">Check-in process</button>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    
+    <div class="tab-pane fade show active" id="requests">
+        @if (!pending.Any())
+        {
+            <div class="alert alert-info">No pending booking requests.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Request #</th>
+                            <th>Check-in</th>
+                            <th>Check-out</th>
+                            <th>Status</th>
+                            <th class="text-end">Decision</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var b in pending)
+                        {
+                            <tr>
+                                <td>@b.Id</td>
+                                <td>@b.CheckIn.ToString("dd MMM yyyy")</td>
+                                <td>@b.CheckOut.ToString("dd MMM yyyy")</td>
+                                <td><span class="badge bg-warning text-dark">@b.Status</span></td>
+                                <td class="text-end">
+                                    <form asp-action="ReviewBooking" method="post" class="d-inline-flex gap-2">
+                                        <input type="hidden" name="bookingId" value="@b.Id" />
+                                        <button type="submit" name="decision" value="@BookingStatus.Approved" class="btn btn-success btn-sm">Approve</button>
+                                        <button type="submit" name="decision" value="@BookingStatus.Rejected" class="btn btn-outline-danger btn-sm">Reject</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    
+    <div class="tab-pane fade" id="checkin">
+        <form asp-action="ConfigurationCheckIn" method="post" class="card shadow-sm p-4" style="max-width: 720px;">
+            <input type="hidden" name="PropertyApplicationId" value="@Model.Id" />
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold" for="HouseRules">House rules</label>
+                <textarea id="HouseRules" name="HouseRules" class="form-control" rows="4"
+                          placeholder="No smoking, quiet hours after 22:00...">@config.HouseRules</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold" for="CheckInInstructions">Check-in instructions</label>
+                <textarea id="CheckInInstructions" name="CheckInInstructions" class="form-control" rows="4"
+                          placeholder="Key box code, parking, how to reach the entrance...">@config.CheckInInstructions</textarea>
+            </div>
+
+            <div class="mb-2 fw-semibold">Required documents</div>
+
+            <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" id="RequiredIdUpload" name="RequiredIdUpload" value="true" @(config.RequiredIdUpload ? "checked" : "") />
+                <label class="form-check-label" for="RequiredIdUpload">Guest must upload a valid ID</label>
+            </div>
+
+            <div class="form-check form-switch mb-4">
+                <input class="form-check-input" type="checkbox" id="RequiresRentalAgreementSigned" name="RequiresRentalAgreementSigned" value="true" @(config.RequiresRentalAgreementSigned ? "checked" : "") />
+                <label class="form-check-label" for="RequiresRentalAgreementSigned">Guest must sign the rental agreement</label>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-danger px-4">Save check-in settings</button>
+            </div>
+        </form>
+    </div>
+</div>

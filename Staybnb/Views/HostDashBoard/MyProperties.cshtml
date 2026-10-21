@@ -1,0 +1,42 @@
+﻿@model List<Staybnb.Models.PropertyApplication>
+
+@{
+    ViewData["Title"] = "My Properties";
+}
+
+<h2 class="mb-4">My Properties</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">You have no properties yet.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var p in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title">@p.Title</h5>
+                            @if (p.Status == Staybnb.Models.ApplicationStatus.Approved)
+                            {
+                                <span class="badge @(p.IsActive ? "bg-success" : "bg-secondary")">@(p.IsActive ? "Active" : "Inactive")</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">@p.Status</span>
+                            }
+                        </div>
+                        <p class="text-muted mb-1">@p.Address</p>
+                        <p class="fw-semibold">R @p.Price.ToString("N2") / night</p>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <a asp-action="Index" asp-route-propertyId="@p.Id" class="btn btn-outline-dark btn-sm">Manage</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

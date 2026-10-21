@@ -1,8 +1,62 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Staybnb - Find Your Stay";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-3 fw-bold">Welcome to Staybnb</h1>
+        <p class="lead">
+            Find your perfect stay, explore properties, and make yourself at home.
+        </p>
+        <a asp-controller="Home" asp-action="Privacy" class="btn btn-outline-primary btn-lg mt-3">
+            Learn More
+        </a>
+    </div>
+
+    <div class="row g-4 mt-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Find a Stay</h3>
+                    <p class="card-text">
+                        Explore available properties and find accommodation that suits your needs.
+                    </p>
+                    <a asp-controller="Home" asp-action="Privacy" class="btn btn-primary">
+                        Explore
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Become a Host</h3>
+                    <p class="card-text">
+                        Apply to list your property and manage booking requests.
+                    </p>
+                    <a asp-controller="Login"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        Become a Host
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Your Account</h3>
+                    <p class="card-text">
+                        Sign in to access your account and manage your activities.
+                    </p>
+                    <a asp-controller="Login" asp-action="Index" class="btn btn-primary">
+                        Sign In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

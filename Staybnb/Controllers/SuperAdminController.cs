@@ -1,33 +1,38 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Staybnb.Data;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Staybnb.Controllers
-
-    
 {
-    [Authorize(Roles ="SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin")]
     public class SuperAdminController : Controller
     {
-        private readonly UserManager _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public SuperAdminController(UserManger userManger) { 
-         
-            _userManager = userManger;
+        public SuperAdminController(UserManager<IdentityUser> userManager)
+        {
+            _userManager = userManager;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Guests()
+        {
+            var guests = await _userManager.GetUsersInRoleAsync("Guest");
+            return View(guests);
+        }
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> PromoteToAdmin(string userId)
         {
-            var user = await _userManager.FindAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return NotFound();
 
-            if (!await _userManager.IsInRoleAsync(user, "Admin")) {
-
+            if (!await _userManager.IsInRoleAsync(user, "Admin"))
+            {
                 await _userManager.AddToRoleAsync(user, "Admin");
             }
-            return RedirectToAction("ManageUsers");
+            return RedirectToAction("Guests");
         }
     }
 }

@@ -6,9 +6,8 @@ namespace Staybnb.Data
     {
         public static async Task SeedRolesAndSuperAdminAsync(IServiceProvider serviceProvider)
         {
-
-            var roleManager = serviceProvider.GetRequiredService();
-            var userManager = serviceProvider.GetRequiredService();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
             string[] roleNames = { "SuperAdmin", "Admin", "Host", "Guest" };
 
@@ -19,9 +18,11 @@ namespace Staybnb.Data
                     await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
+
             string superAdminEmail = "superadmin@stayhub.com";
             var superAdmin = await userManager.FindByEmailAsync(superAdminEmail);
-            if (superAdmin != null)
+
+            if (superAdmin == null)
             {
                 var newSuperAdmin = new IdentityUser
                 {
@@ -29,10 +30,11 @@ namespace Staybnb.Data
                     Email = superAdminEmail,
                     EmailConfirmed = true
                 };
-                var createResult = await userManager.CreateAsync(newSuperAdmin, "SecurePassword123");
+
+                var createResult = await userManager.CreateAsync(newSuperAdmin, "SecurePassword123!");
                 if (createResult.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(newSuperAdmin, "superAdmin");
+                    await userManager.AddToRoleAsync(newSuperAdmin, "SuperAdmin");
                 }
             }
         }

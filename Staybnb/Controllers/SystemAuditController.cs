@@ -36,9 +36,6 @@ namespace Staybnb.Controllers
         }
 
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        
     }
 }

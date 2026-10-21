@@ -2,8 +2,10 @@
 {
     public class BookingRequest
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
+
         public DateTime CheckIn { get; set; }
+
         public DateTime CheckOut { get; set; }
 
         public string GuestName { get; set; } = string.Empty;
@@ -12,9 +14,14 @@
 
         public int PropertyApplicationId { get; set; }
 
+        public PropertyApplication? PropertyApplication { get; set; }
     }
+
     public enum BookingStatus
     {
-        Pending,Approved,Rejected,CheckedIn
+        Pending,
+        Approved,
+        Rejected,
+        CheckedIn
     }
 }

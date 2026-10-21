@@ -1,0 +1,17 @@
+﻿@model IList<Microsoft.AspNetCore.Identity.IdentityUser>
+
+<h2>Guests</h2>
+<table class="table">
+    @foreach (var u in Model)
+    {
+        <tr>
+            <td>@u.Email</td>
+            <td>
+                <form asp-action="PromoteToAdmin" method="post">
+                    <input type="hidden" name="userId" value="@u.Id" />
+                    <button class="btn btn-primary btn-sm">Promote to Admin</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>

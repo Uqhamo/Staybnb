@@ -6,7 +6,7 @@ namespace Staybnb.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<PropertyApplication> PropertYApplications { get; set; }
+        public DbSet<PropertyApplication> PropertyApplications { get; set; }
 
         public DbSet<PropertyImage> PropertyImages { get; set; }
 
@@ -17,6 +17,9 @@ namespace Staybnb.Data
         public DbSet<Booking> Bookings { get; set; }
 
         public DbSet <ActivityLog> ActivityLogs { get; set; }
+
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<HostApplication> HostApplications { get; set; }
 
 
     }
