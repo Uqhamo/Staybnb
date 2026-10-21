@@ -8,11 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Register MVC
 builder.Services.AddControllersWithViews();
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Login/Index";
-    options.AccessDeniedPath = "/Login/Index";
-});
+
 // Register the database using SQLite
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(
@@ -24,6 +20,11 @@ builder.Services
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Login/Index";
+    options.AccessDeniedPath = "/Login/Index";
+});
 // Register authorization policies
 builder.Services.AddAuthorization(options =>
 {
