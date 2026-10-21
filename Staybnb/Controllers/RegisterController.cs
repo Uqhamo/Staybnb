@@ -26,7 +26,7 @@ namespace Staybnb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(
-            string email, string password, string confirmPassword)
+            string email, string password, string confirmPassword,string accountType)
         {
             if (string.IsNullOrWhiteSpace(email) ||
                 string.IsNullOrWhiteSpace(password))
@@ -59,8 +59,21 @@ namespace Staybnb.Controllers
 
             if (result.Succeeded)
             {
-                //await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Login");
+                if (accountType == "Guest")
+                {
+                    await _userManager.AddToRoleAsync(user, "Guest");
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    return RedirectToAction("Index", "Home");
+                }
+
+                if (accountType == "Host")
+                {
+                    await _userManager.AddToRoleAsync(user, "Guest");
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    return RedirectToAction("Index", "HostRegistration");
+                }
             }
 
             ViewBag.Error = string.Join(" ", result.Errors.Select(e => e.Description));

@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Staybnb.Models.PropertyApplication>
+
+@{
+    ViewData["Title"] = "Browse Houses";
+}
+
+<h2 class="mb-4">Find Your Stay</h2>
+
+<form method="get" asp-controller="Property" asp-action="Index" class="row g-3 mb-4">
+    <div class="col-md-8">
+        <label for="city" class="form-label">City or address</label>
+        <input id="city" name="city" value="@ViewBag.City"
+               class="form-control" placeholder="Search by city or address" />
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary me-2">Search</button>
+        <a asp-controller="Property" asp-action="Index"
+           class="btn btn-outline-secondary">Clear</a>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No active properties were found. Please try another search.
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var property in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    @if (property.Images.Any())
+                    {
+                        <img src="@property.Images.First().ImageUrl"
+                             class="card-img-top"
+                             alt="@property.Title"
+                             style="height:220px; object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <div class="bg-light d-flex align-items-center justify-content-center"
+                             style="height:220px;">
+                            <span class="text-muted">No image available</span>
+                        </div>
+                    }
+
+                    <div class="card-body">
+                        <h5 class="card-title">@property.Title</h5>
+                        <p class="text-muted">@property.Address</p>
+                        <p>@property.Description</p>
+                        <p class="fw-bold">R @property.Price.ToString("N2") per night</p>
+
+                        <a asp-controller="Property"
+                           asp-action="Details"
+                           asp-route-id="@property.Id"
+                           class="btn btn-primary">
+                            View Property
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+}

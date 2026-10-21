@@ -15,12 +15,28 @@ namespace Staybnb.Controllers
     public class HostDashboardController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public HostDashboardController(ApplicationDbContext context)
+        private readonly UserManager<IdentityUser> _userManager;
+        public HostDashboardController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+        [HttpGet]
+        public async Task<IActionResult> MyProperties()
+        {
+            var userId = _userManager.GetUserId(User);
 
+            if (userId == null)
+            {
+                return Challenge();
+            }
+
+            var properties = await _context.PropertyApplications
+                .Where(p => p.HostId == userId)
+                .ToListAsync();
+
+            return View(properties);
+        }
         private string? HostId => User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         public async Task<IActionResult> Index(int propertyId)
@@ -103,6 +119,8 @@ namespace Staybnb.Controllers
         }
     }
 
+
+    /*
     [Authorize(Roles = "Guest")]
     public class GuestDashboardController : Controller
     {
@@ -110,5 +128,5 @@ namespace Staybnb.Controllers
         {
             return View();
         }
-    }
+    }*/
 }

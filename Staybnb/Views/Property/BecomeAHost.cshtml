@@ -1,0 +1,22 @@
+﻿@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+<form asp-action="BecomeAHost"
+      method="post"
+      enctype="multipart/form-data">
+
+    <input asp-for="PropertyImages"
+           type="file"
+           multiple
+           accept=".jpg,.jpeg,.png,.webp" />
+
+    <span asp-validation-for="PropertyImages"
+          class="text-danger"></span>
+
+    <button type="submit" class="btn btn-primary">
+        Submit Property
+    </button>
+</form>

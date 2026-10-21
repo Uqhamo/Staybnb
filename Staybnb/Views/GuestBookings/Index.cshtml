@@ -1,0 +1,113 @@
+﻿@model IEnumerable<Staybnb.Models.BookingRequest>
+@using Staybnb.Models
+
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<h2 class="mb-4">My Bookings</h2>
+
+<p class="text-muted">
+    View your reservations and check the status of your booking requests.
+</p>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">
+        You don't have any bookings yet.
+        <a asp-controller="Property" asp-action="Index" class="alert-link">
+            Browse houses
+        </a>
+        to find your next stay.
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var booking in Model)
+        {
+            <div class="col">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @(booking.PropertyApplication?.Title ?? "Property")
+                        </h5>
+
+                        <p class="text-muted mb-3">
+                            @(booking.PropertyApplication?.Address ?? "Address unavailable")
+                        </p>
+
+                        <p>
+                            <strong>Booking reference:</strong><br />
+                            @booking.Id
+                        </p>
+
+                        <p>
+                            <strong>Guest name:</strong><br />
+                            @booking.GuestName
+                        </p>
+
+                        <p>
+                            <strong>Check-in:</strong><br />
+                            @booking.CheckIn.ToString("dd MMM yyyy")
+                        </p>
+
+                        <p>
+                            <strong>Check-out:</strong><br />
+                            @booking.CheckOut.ToString("dd MMM yyyy")
+                        </p>
+
+                        <p>
+                            <strong>Status:</strong><br />
+
+                            @switch (booking.Status)
+                            {
+                                case BookingStatus.Pending:
+                                    <span class="badge bg-warning text-dark">Pending approval</span>
+                                    break;
+
+                                case BookingStatus.Approved:
+                                    <span class="badge bg-success">Approved</span>
+                                    break;
+
+                                case BookingStatus.Rejected:
+                                    <span class="badge bg-danger">Rejected</span>
+                                    break;
+
+                                case BookingStatus.CheckedIn:
+                                    <span class="badge bg-primary">Checked in</span>
+                                    break;
+                            }
+                        </p>
+
+                        @if (booking.Status == BookingStatus.Approved)
+                        {
+                            <a asp-controller="GuestCheckIn"
+                               asp-action="Index"
+                               asp-route-bookingId="@booking.Id"
+                               class="btn btn-primary w-100">
+                                Complete Check-in
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+}
+
+<div class="mt-4">
+    <a asp-controller="Property"
+       asp-action="Index"
+       class="btn btn-outline-primary">
+        Browse More Houses
+    </a>
+
+    <a asp-controller="GuestDashBoard"
+       asp-action="Index"
+       class="btn btn-outline-secondary">
+        Back to Dashboard
+    </a>
+
+</div>
