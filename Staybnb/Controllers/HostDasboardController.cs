@@ -154,6 +154,24 @@ namespace Staybnb.Controllers
 
             return View();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> BookingRequests(int propertyId)
+        {
+            var hostId = _userManager.GetUserId(User);
+
+            var property = await _context.PropertyApplications
+                .Include(p => p.BookingRequests)
+                .FirstOrDefaultAsync(p =>
+                    p.Id == propertyId && p.HostId == hostId);
+
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            return View(property.BookingRequests);
+        }
     }
 
 

@@ -108,7 +108,7 @@ namespace Staybnb.Controllers
             TempData["Success"] =
                 "Your property application has been submitted for review.";
 
-            return RedirectToAction("Index","HostDashboard");
+            return RedirectToAction("Overview", "HostDashboard");
         }
 
 
@@ -137,5 +137,23 @@ namespace Staybnb.Controllers
         {
             return View();
         }
+    
+    [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var property = await _context.PropertyApplications
+                .Include(p => p.Images)
+                .FirstOrDefaultAsync(p =>
+                    p.Id == id &&
+                    p.Status == ApplicationStatus.Approved &&
+                    p.IsActive);
+
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            return View(property);
+        } 
     }
-}
+    }

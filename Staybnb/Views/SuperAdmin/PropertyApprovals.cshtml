@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Staybnb.Models.PropertyApplication>
+
+@{
+    ViewData["Title"] = "Property Approvals";
+}
+
+<div class="container py-4">
+    <h2>Property Approvals</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No pending property applications found.
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Address</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var property in Model)
+                {
+                    <tr>
+                        <td>@property.Title</td>
+                        <td>@property.Address</td>
+                        <td>@property.Price</td>
+                        <td>@property.Status</td>
+                        <td>
+                            <form asp-action="ApproveProperty"
+                                  asp-route-id="@property.Id"
+                                  method="post">
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit"
+                                        class="btn btn-success">
+                                    Approve
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

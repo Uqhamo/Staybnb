@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Staybnb.Models.BookingRequest>
+
+@{
+    ViewData["Title"] = "Booking Requests";
+}
+
+<div class="container mt-4">
+    <h2>Booking Requests</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No booking requests found.
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                    <th>Status</th>
+                    <th>Decision</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var booking in Model)
+                {
+                    <tr>
+                        <td>@booking.Id</td>
+                        <td>@booking.CheckIn.ToString("dd MMM yyyy")</td>
+                        <td>@booking.CheckOut.ToString("dd MMM yyyy")</td>
+                        <td>@booking.Status</td>
+                        <td>
+                            @if (booking.Status == Staybnb.Models.BookingStatus.Pending)
+                            {
+                                <form asp-controller="HostDashboard"
+                                      asp-action="ReviewBooking"
+                                      method="post">
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="bookingId"
+                                           value="@booking.Id" />
+
+                                    <button type="submit"
+                                            name="decision"
+                                            value="@Staybnb.Models.BookingStatus.Approved"
+                                            class="btn btn-success btn-sm">
+                                        Approve
+                                    </button>
+
+                                    <button type="submit"
+                                            name="decision"
+                                            value="@Staybnb.Models.BookingStatus.Rejected"
+                                            class="btn btn-danger btn-sm">
+                                        Reject
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

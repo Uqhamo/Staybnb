@@ -1,39 +1,294 @@
 ﻿@{
-    ViewData["Title"] = "Staybnb - Find Your Stay";
+    ViewData["Title"] = "Staybnb Dashboard";
 }
 
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="display-3 fw-bold">Welcome to Staybnb</h1>
-        <p class="lead">
-            Find your perfect stay, explore properties, and make yourself at home.
-        </p>
-        <a asp-controller="Home" asp-action="Privacy" class="btn btn-outline-primary btn-lg mt-3">
-            Learn More
-        </a>
-    </div>
+<style>
+    body {
+        background-color: #f5f6fa;
+    }
 
-    <div class="row g-4 mt-4">
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <h3 class="card-title">Find a Stay</h3>
-                    <p class="card-text">
-                        Explore available properties and find accommodation that suits your needs.
+    .dashboard-wrapper {
+        display: flex;
+        align-items: flex-start;
+        min-height: auto;
+        margin: -1.5rem;
+    }
+
+    .sidebar {
+        width: 250px;
+        min-width: 250px;
+        background-color: #172554;
+        color: white;
+        padding: 25px 15px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .brand {
+        font-size: 27px;
+        font-weight: bold;
+        padding: 10px 15px 30px;
+    }
+
+    .sidebar {
+        width: 220px;
+        min-width: 220px;
+        height: fit-content;
+        background-color: #172554;
+        color: white;
+        padding: 18px 12px;
+        display: flex;
+        flex-direction: column;
+        border-radius: 0 0 12px 0;
+    }
+
+    .brand {
+        font-size: 24px;
+        font-weight: bold;
+        padding: 8px 12px 22px;
+    }
+
+    .sidebar a {
+        display: block;
+        color: #dbeafe;
+        text-decoration: none;
+        padding: 10px 12px;
+        border-radius: 8px;
+        margin-bottom: 4px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+    .sidebar .logout-link {
+        margin-top: 10px;
+        color: #fecaca;
+    }
+    .dashboard-content {
+        flex: 1;
+        min-width: 0;
+        padding: 35px;
+    }
+
+    .welcome-card {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        margin-bottom: 25px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+    }
+
+    .stat-card,
+    .action-card {
+        background: white;
+        border: none;
+        border-radius: 14px;
+        padding: 24px;
+        height: 100%;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+    }
+
+    .stat-number {
+        font-size: 28px;
+        font-weight: bold;
+        color: #172554;
+    }
+
+    .dashboard-icon {
+        font-size: 25px;
+        margin-bottom: 12px;
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-wrapper {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 100%;
+            min-width: 0;
+        }
+
+            .sidebar .logout-link {
+                margin-top: 10px;
+            }
+
+        .dashboard-content {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="dashboard-wrapper">
+
+   
+    <aside class="sidebar">
+
+        <div class="brand">
+            Staybnb
+        </div>
+
+        <nav>
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="active">
+               Dashboard
+            </a>
+
+            <a asp-controller="Property"
+               asp-action="Index">
+                My Properties
+            </a>
+
+            <a href="#booking-requests">
+                Booking Requests
+            </a>
+
+            <a href="#earnings">
+                 Earnings
+            </a>
+
+            <a href="#reviews">
+                Reviews
+            </a>
+
+            <a href="#messages">
+                Messages
+            </a>
+
+            <a href="#notifications">
+                Notifications
+            </a>
+
+        </nav>
+
+        <form asp-area="Identity"
+              asp-page="/Account/Logout"
+              asp-route-returnUrl="/"
+              method="post"
+              class="logout-link">
+
+            <button type="submit"
+                    class="btn text-start w-100"
+                    style="color: #fecaca;">
+                Logout
+            </button>
+
+        </form>
+
+    </aside>
+
+   
+    <main class="dashboard-content">
+
+        <div class="welcome-card">
+            <h1 class="fw-bold">Welcome to Staybnb!</h1>
+
+            <p class="text-muted mb-4">
+                Find your perfect stay, manage your properties,
+                and keep track of your hosting activities.
+            </p>
+
+            <a asp-controller="Property"
+               asp-action="Index"
+               class="btn btn-primary">
+                Explore Properties
+            </a>
+
+            <a asp-controller="HostRegistration"
+               asp-action="Index"
+               class="btn btn-outline-primary ms-2">
+                Become a Host
+            </a>
+            <a asp-controller="Login"
+               asp-action="Index"
+               class="btn btn-success mb-2">
+                Sign In
+            </a>
+        </div>
+
+        
+        <h4 class="fw-bold mb-3">Overview</h4>
+
+        <div class="row g-4 mb-4">
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card">
+                    <div class="dashboard-icon"></div>
+                    <p class="text-muted mb-1">My Properties</p>
+                    <div class="stat-number">—</div>
+                    <small class="text-muted">
+                        Property total will appear here
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card">
+                    <div class="dashboard-icon"></div>
+                    <p class="text-muted mb-1">Booking Requests</p>
+                    <div class="stat-number">—</div>
+                    <small class="text-muted">
+                        Requests will appear here
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card">
+                    <div class="dashboard-icon"></div>
+                    <p class="text-muted mb-1">Earnings</p>
+                    <div class="stat-number">R —</div>
+                    <small class="text-muted">
+                        Earnings will appear here
+                    </small>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card">
+                    <div class="dashboard-icon"></div>
+                    <p class="text-muted mb-1">Reviews</p>
+                    <div class="stat-number">—</div>
+                    <small class="text-muted">
+                        Reviews will appear here
+                    </small>
+                </div>
+            </div>
+
+        </div>
+
+        
+        <h4 class="fw-bold mb-3">Quick Actions</h4>
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+                <div class="action-card">
+                    <div class="dashboard-icon">🔍</div>
+                    <h5>Find a Stay</h5>
+                    <p class="text-muted">
+                        Browse available accommodation and view property details.
                     </p>
-                    <a asp-controller="Home" asp-action="Privacy" class="btn btn-primary">
-                        Explore
+                    <a asp-controller="Property"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        Browse Properties
                     </a>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <h3 class="card-title">Become a Host</h3>
-                    <p class="card-text">
-                        Apply to list your property and manage booking requests.
+            <div class="col-md-6">
+                <div class="action-card">
+                    <div class="dashboard-icon"></div>
+                    <h5>Become a Host</h5>
+                    <p class="text-muted">
+                        Apply to list your property and start hosting guests.
                     </p>
                     <a asp-controller="HostRegistration"
                        asp-action="Index"
@@ -42,21 +297,8 @@
                     </a>
                 </div>
             </div>
+
         </div>
 
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <h3 class="card-title">Your Account</h3>
-                    <p class="card-text">
-                        Sign in to access your account and manage your activities.
-                    </p>
-                    <a asp-controller="Login" asp-action="Index" class="btn btn-primary">
-                        Sign In
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
+        
+        

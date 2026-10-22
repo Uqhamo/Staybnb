@@ -54,18 +54,21 @@ namespace Staybnb.Controllers
             {
                 var roles = await _userManager.GetRolesAsync(user);
 
-              
-                    
-     
 
-                if (await _userManager.IsInRoleAsync(user, "Admin") ||
-                    await _userManager.IsInRoleAsync(user, "SuperAdmin"))
+
+
+
+                if (await _userManager.IsInRoleAsync(user, "SuperAdmin"))
                 {
-                    return RedirectToAction(
-                        "ApplicationPending", "HostApplication");
+                    return RedirectToAction("PropertyApprovals", "SuperAdmin");
                 }
 
-                
+                if (await _userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    return RedirectToAction("ApplicationPending", "HostApplication");
+                }
+
+
                 if (await _userManager.IsInRoleAsync(user, "Host"))
                 {
                     return RedirectToAction(

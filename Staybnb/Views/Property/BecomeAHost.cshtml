@@ -1,27 +1,107 @@
 ﻿@model Staybnb.Models.ViewModels.PropertySubmissionViewModel
+
 @{
     ViewData["Title"] = "Become a Host";
 }
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["Success"]
-    </div>
+<div class="container py-4">
+    <h2>Submit Your Property</h2>
+    <p class="text-muted">
+        Enter your property details and upload at least one image.
+    </p>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <form asp-controller="Property"
+          asp-action="BecomeAHost"
+          method="post"
+          enctype="multipart/form-data">
+
+        @Html.AntiForgeryToken()
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label">
+                Property Title
+            </label>
+            <input asp-for="Title"
+                   class="form-control"
+                   placeholder="e.g. Modern Two-Bedroom Apartment" />
+            <span asp-validation-for="Title"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">
+                Description
+            </label>
+            <textarea asp-for="Description"
+                      class="form-control"
+                      rows="4"
+                      placeholder="Describe your property"></textarea>
+            <span asp-validation-for="Description"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label">
+                Price per Night
+            </label>
+            <input asp-for="Price"
+                   type="number"
+                   step="0.01"
+                   min="0.01"
+                   class="form-control"
+                   placeholder="e.g. 850.00" />
+            <span asp-validation-for="Price"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label">
+                Property Address
+            </label>
+            <input asp-for="Address"
+                   class="form-control"
+                   placeholder="Enter the property address" />
+            <span asp-validation-for="Address"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PropertyImages" class="form-label">
+                Property Images
+            </label>
+            <input asp-for="PropertyImages"
+                   type="file"
+                   class="form-control"
+                   multiple
+                   accept=".jpg,.jpeg,.png,.webp" />
+            <span asp-validation-for="PropertyImages"
+                  class="text-danger"></span>
+            <small class="text-muted">
+                Upload at least one JPG, JPEG, PNG or WEBP image.
+            </small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Submit Property
+        </button>
+
+        <a asp-controller="HostDashboard"
+           asp-action="Overview"
+           class="btn btn-secondary ms-2">
+            Cancel
+        </a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
-<form asp-action="BecomeAHost"
-      method="post"
-      enctype="multipart/form-data">
-     
-    <input asp-for="PropertyImages"
-           type="file"
-           multiple
-           accept=".jpg,.jpeg,.png,.webp" />
-
-    <span asp-validation-for="PropertyImages"
-          class="text-danger"></span>
-
-    <button type="submit" class="btn btn-primary">
-        Submit Property
-    </button>
-</form>
