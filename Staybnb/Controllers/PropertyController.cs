@@ -17,7 +17,7 @@ namespace Staybnb.Controllers
             _context = context;
         }
 
-       
+
         [Authorize]
         [HttpGet]
         public IActionResult BecomeAHost()
@@ -25,7 +25,7 @@ namespace Staybnb.Controllers
             return View(new PropertySubmissionViewModel());
         }
 
-       
+
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -39,7 +39,7 @@ namespace Staybnb.Controllers
                     "You must upload at least one property image.");
             }
 
-           
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -108,10 +108,10 @@ namespace Staybnb.Controllers
             TempData["Success"] =
                 "Your property application has been submitted for review.";
 
-            return RedirectToAction(nameof(BecomeAHost));
+            return RedirectToAction("Index","HostDashboard");
         }
 
-        
+
         [HttpGet]
         public async Task<IActionResult> Index(string? city)
         {
@@ -131,6 +131,11 @@ namespace Staybnb.Controllers
             var properties = await query.ToListAsync();
 
             return View(properties);
+        }
+        [HttpGet]
+        public IActionResult ApplicationSubmitted()
+        {
+            return View();
         }
     }
 }

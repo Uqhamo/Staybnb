@@ -64,12 +64,22 @@ namespace Staybnb.Controllers
                     await _userManager.AddToRoleAsync(user, "Guest");
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "HostRegistration");
                 }
 
                 if (accountType == "Host")
                 {
-                    await _userManager.AddToRoleAsync(user, "Guest");
+                    var roleResult = await _userManager.AddToRoleAsync(user, "Guest");
+                    if (!roleResult.Succeeded)
+                    {
+                        await _userManager.DeleteAsync(user);
+
+                        ViewBag.Error = string.Join(" ",
+                            roleResult.Errors.Select(e => e.Description));
+
+                        return View();
+                    }
+                    //await _userManager.AddToRoleAsync(user, "Guest");
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
                     return RedirectToAction("Index", "HostRegistration");

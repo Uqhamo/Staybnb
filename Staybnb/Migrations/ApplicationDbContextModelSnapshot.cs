@@ -296,6 +296,10 @@ namespace Staybnb.Migrations
                     b.Property<DateTime>("CheckOut")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("GuestId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("GuestName")
                         .IsRequired()
                         .HasColumnType("TEXT");

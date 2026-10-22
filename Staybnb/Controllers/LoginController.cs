@@ -1,19 +1,25 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Staybnb.Data;
 
 namespace Staybnb.Controllers
 {
     public class LoginController : Controller
     {
+        private readonly ApplicationDbContext _context;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
 
         public LoginController(
             SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager, ApplicationDbContext context
+            )
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _context = context;
+
         }
 
         [HttpGet]
@@ -46,7 +52,12 @@ namespace Staybnb.Controllers
 
             if (result.Succeeded)
             {
-             
+                var roles = await _userManager.GetRolesAsync(user);
+
+              
+                    
+     
+
                 if (await _userManager.IsInRoleAsync(user, "Admin") ||
                     await _userManager.IsInRoleAsync(user, "SuperAdmin"))
                 {
@@ -58,12 +69,20 @@ namespace Staybnb.Controllers
                 if (await _userManager.IsInRoleAsync(user, "Host"))
                 {
                     return RedirectToAction(
-                        "MyProperties", "HostDashboard");
+                        "Overview", "HostDashboard");
                 }
 
                 
                 if (await _userManager.IsInRoleAsync(user, "Guest"))
                 {
+
+                    var hasPendingApplication = await _context.HostApplications
+       .AnyAsync(a => a.UserId == user.Id && !a.IsApproved);
+
+                    if (hasPendingApplication)
+                    {
+                        return RedirectToAction("Success", "HostRegistration");
+                    }
                     return RedirectToAction(
                         "Index", "GuestDashBoard");
                 }

@@ -1,4 +1,9 @@
-﻿@if (TempData["Success"] != null)
+﻿@model Staybnb.Models.ViewModels.PropertySubmissionViewModel
+@{
+    ViewData["Title"] = "Become a Host";
+}
+
+@if (TempData["Success"] != null)
 {
     <div class="alert alert-success">
         @TempData["Success"]
@@ -7,7 +12,7 @@
 <form asp-action="BecomeAHost"
       method="post"
       enctype="multipart/form-data">
-
+     
     <input asp-for="PropertyImages"
            type="file"
            multiple

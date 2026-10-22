@@ -39,16 +39,34 @@ namespace Staybnb.Controllers
         }
         private string? HostId => User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        public async Task<IActionResult> Index(int propertyId)
+        [HttpGet]
+        public async Task<IActionResult> Index(int? propertyId)
         {
-            var property = await _context.PropertyApplications
+            var hostId = _userManager.GetUserId(User);
+
+            if (hostId == null)
+            {
+                return Challenge();
+            }
+
+            var query = _context.PropertyApplications
                 .Include(p => p.BookingRequests)
                 .Include(p => p.CheckInConfig)
-                .FirstOrDefaultAsync(p => p.Id == propertyId && p.HostId == HostId);
+                .Where(p => p.HostId == hostId);
 
-            if (property == null) return NotFound("Property not found or unauthorized");
+            var property = propertyId.HasValue
+                ? await query.FirstOrDefaultAsync(p => p.Id == propertyId.Value)
+                : await query.FirstOrDefaultAsync();
 
-            if (property.Status != ApplicationStatus.Approved) return View("PendingApproval");
+            if (property == null)
+            {
+                return RedirectToAction("BecomeAHost", "Property");
+            }
+
+            if (property.Status != ApplicationStatus.Approved)
+            {
+                return View("PendingApproval", property);
+            }
 
             return View(property);
         }
@@ -116,6 +134,25 @@ namespace Staybnb.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index), new { propertyId = config.PropertyApplicationId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Overview()
+        {
+            var hostId = _userManager.GetUserId(User);
+
+            if (hostId == null)
+            {
+                return Challenge();
+            }
+
+            var properties = await _context.PropertyApplications
+                .Where(p => p.HostId == hostId)
+                .ToListAsync();
+
+            ViewBag.Properties = properties;
+
+            return View();
         }
     }
 
