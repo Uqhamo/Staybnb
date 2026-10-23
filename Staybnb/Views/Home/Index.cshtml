@@ -136,7 +136,7 @@
                 My Properties
             </a>
 
-            <a href="#booking-request>
+            <a href="#booking-requests">
                 Booking Requests
             </a>
 
@@ -145,14 +145,16 @@
             </a>
 
             <a href="#reviews">
-                Reviews
+                Ratings & Reviews
             </a>
 
-            <a href="#messages">
+            <a asp-controller="Messages"
+               asp-action="Index">
                 Messages
             </a>
 
-            <a href="#notifications">
+            <a asp-controller="Notifications"
+               asp-action="Index">
                 Notifications
             </a>
         </nav>
@@ -225,10 +227,8 @@
                 <div class="stat-card">
                     <div class="dashboard-icon"></div>
                     <p class="text-muted mb-1">My Properties</p>
-                    <div class="stat-number">—</div>
-                    <small class="text-muted">
-                        Property total will appear here
-                    </small>
+                    <div class="stat-number">@ViewBag.TotalProperties</div>
+                    <small class="text-muted">Properties listed</small>
                 </div>
             </div>
 
@@ -236,10 +236,8 @@
                 <div class="stat-card">
                     <div class="dashboard-icon"></div>
                     <p class="text-muted mb-1">Booking Requests</p>
-                    <div class="stat-number">—</div>
-                    <small class="text-muted">
-                        Requests will appear here
-                    </small>
+                    <div class="stat-number">@ViewBag.TotalRequests</div>
+                    <small class="text-muted">Requests received</small>
                 </div>
             </div>
 
@@ -247,10 +245,10 @@
                 <div class="stat-card">
                     <div class="dashboard-icon"></div>
                     <p class="text-muted mb-1">Earnings</p>
-                    <div class="stat-number">R —</div>
-                    <small class="text-muted">
-                        Earnings will appear here
-                    </small>
+                    <div class="stat-number">
+                        R @(((decimal)(ViewBag.TotalEarnings ?? 0m)).ToString("N2"))
+                    </div>
+                    <small class="text-muted">Total recorded earnings</small>
                 </div>
             </div>
 
@@ -258,60 +256,9 @@
                 <div class="stat-card">
                     <div class="dashboard-icon"></div>
                     <p class="text-muted mb-1">Reviews</p>
-                    <div class="stat-number">—</div>
-                    <small class="text-muted">
-                        Reviews will appear here
-                    </small>
+                    <div class="stat-number">@ViewBag.TotalReviews</div>
+                    <small class="text-muted">Reviews received</small>
                 </div>
             </div>
 
         </div>
-
-       
-        <h4 class="fw-bold mb-3">Quick Actions</h4>
-
-        <div class="row g-4">
-
-            <div class="col-md-6">
-                <div class="action-card">
-                    <div class="dashboard-icon"></div>
-
-                    <h5>Find a Stay</h5>
-
-                    <p class="text-muted">
-                        Browse available accommodation and view
-                        property details.
-                    </p>
-
-                    <a asp-controller="Property"
-                       asp-action="Index"
-                       class="btn btn-primary">
-                        Browse Properties
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="action-card">
-                    <div class="dashboard-icon"></div>
-
-                    <h5>Become a Host</h5>
-
-                    <p class="text-muted">
-                        Apply to list your property and start
-                        hosting guests.
-                    </p>
-
-                    <a asp-controller="HostRegistration"
-                       asp-action="Index"
-                       class="btn btn-primary">
-                        Become a Host
-                    </a>
-                </div>
-            </div>
-
-        </div>
-
-    </main>
-
-</div>

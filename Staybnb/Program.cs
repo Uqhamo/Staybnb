@@ -6,15 +6,15 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register MVC
+
 builder.Services.AddControllersWithViews();
 
-// Register the database using SQLite
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register ASP.NET Core Identity
+
 builder.Services
     .AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -25,7 +25,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Login/Index";
     options.AccessDeniedPath = "/Login/Index";
 });
-// Register authorization policies
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole",
@@ -34,10 +34,11 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("RequireSuperAdminRole",
         policy => policy.RequireRole("SuperAdmin"));
 });
-
+builder.Services.AddScoped<Staybnb.Services.NotificationService>();
+builder.Services.AddScoped<Staybnb.Services.HostStatisticsService>();
 var app = builder.Build();
 
-// Get active properties
+
 app.MapGet("/api/property",
     async (string? city, string? type, ApplicationDbContext db) =>
     {
@@ -53,7 +54,7 @@ app.MapGet("/api/property",
         return Results.Ok(listings);
     });
 
-// Booking request data
+
 app.MapPost("/api/booking",
     async (BookingRequestDto request, ApplicationDbContext db, ClaimsPrincipal user) =>
     {
@@ -97,7 +98,7 @@ app.MapPost("/api/booking",
         return Results.Created($"/api/booking/{booking.Id}", booking);
     });
 
-// Upload a document for an approved booking
+
 app.MapPost("/api/bookings/{id}/upload-document",
     async (int id, IFormFile file, ApplicationDbContext db) =>
     {

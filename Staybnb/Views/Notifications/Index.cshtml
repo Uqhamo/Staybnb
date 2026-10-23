@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Staybnb.Models.Notification>
+
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">My Notifications</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="card p-4">
+            <p class="mb-0">You have no notifications yet.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var notification in Model)
+        {
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <p>@notification.Message</p>
+
+                    <small class="text-muted">
+                        @notification.CreatedAt
+                        .ToLocalTime()
+                        .ToString("dd MMM yyyy HH:mm")
+                    </small>
+
+                    @if (!notification.IsRead)
+                    {
+                        <span class="badge bg-primary ms-2">
+                            Unread
+                        </span>
+                    }
+
+                    <div class="mt-3">
+                        @if (!string.IsNullOrWhiteSpace(
+                            notification.TargetUrl))
+                        {
+                            <a href="@notification.TargetUrl"
+                               class="btn btn-sm btn-outline-primary">
+                                Open
+                            </a>
+                        }
+
+                        @if (!notification.IsRead)
+                        {
+                            <form asp-controller="Notifications"
+                                  asp-action="MarkAsRead"
+                                  method="post"
+                                  class="d-inline">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@notification.Id" />
+
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-secondary">
+                                    Mark as Read
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

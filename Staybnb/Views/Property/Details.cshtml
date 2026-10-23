@@ -2,6 +2,13 @@
 
 @{
     ViewData["Title"] = Model.Title;
+
+    var reviews = ViewBag.ApprovedReviews as List<Staybnb.Models.Review>
+        ?? new List<Staybnb.Models.Review>();
+
+    var averageRating = reviews.Any()
+        ? reviews.Average(r => r.Rating)
+        : 0;
 }
 
 <div class="container mt-4">
@@ -33,7 +40,134 @@
         </div>
     }
 
-    <div class="card shadow-sm p-4 mt-4" style="max-width: 600px;">
+    <hr />
+
+    <h3>Ratings &amp; Reviews</h3>
+
+    @if (reviews.Any())
+    {
+        <p>
+            <strong>@averageRating.ToString("0.0") / 5</strong>
+            (@reviews.Count review(s))
+        </p>
+
+        @foreach (var review in reviews)
+        {
+            <div class="card p-3 mb-3">
+                <p class="mb-1">
+                    <strong>Rating:</strong>
+                    @review.Rating / 5
+                    <span class="text-warning">
+                        @for (int i = 0; i < review.Rating; i++)
+                        {
+                            <text>★</text>
+                        }
+                    </span>
+                </p>
+
+                @if (!string.IsNullOrWhiteSpace(review.Comment))
+                {
+                    <p class="mb-1">@review.Comment</p>
+                }
+
+                <small class="text-muted">
+                    @review.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")
+                </small>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No approved reviews yet. Be the first to share your experience after checking in!</p>
+    }
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        @if (ViewBag.CanReview == true)
+        {
+            <div class="card shadow-sm p-4 mb-4"
+                 style="max-width: 600px;">
+
+                <h4>Write a Review</h4>
+
+                <p class="text-muted">
+                    You can review this property because you have checked in.
+                </p>
+
+                <form asp-controller="Reviews"
+                      asp-action="Create"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="propertyApplicationId"
+                           value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">
+                            Your rating
+                        </label>
+
+                        <select id="rating"
+                                name="rating"
+                                class="form-select"
+                                required>
+                            <option value="">Select a rating</option>
+                            <option value="5">5 - Excellent</option>
+                            <option value="4">4 - Very good</option>
+                            <option value="3">3 - Good</option>
+                            <option value="2">2 - Fair</option>
+                            <option value="1">1 - Poor</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">
+                            Your comments
+                        </label>
+
+                        <textarea id="comment"
+                                  name="comment"
+                                  class="form-control"
+                                  rows="4"
+                                  maxlength="1000"
+                                  placeholder="Share your experience (optional)"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Submit Review
+                    </button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">
+                @if (ViewBag.CanReview == false)
+                {
+                    <text>
+                        Reviews are available to guests who have checked in
+                        and have not already reviewed this property.
+                    </text>
+                }
+            </p>
+        }
+    }
+    else
+    {
+        <p>
+            <a asp-controller="Login" asp-action="Index">
+                Sign in
+            </a>
+            to check whether you can submit a review.
+        </p>
+    }
+
+    <hr />
+
+    <div class="card shadow-sm p-4 mt-4"
+         style="max-width: 600px;">
 
         <h3>Request to Book</h3>
 

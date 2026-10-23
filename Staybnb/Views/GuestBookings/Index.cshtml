@@ -79,16 +79,51 @@ else
                                     break;
                             }
                         </p>
-
                         @if (booking.Status == BookingStatus.Approved)
                         {
-                            <a asp-controller="GuestCheckIn"
-                               asp-action="Index"
-                               asp-route-bookingId="@booking.Id"
-                               class="btn btn-primary w-100">
-                                Complete Check-in
+                            <a asp-controller="BookingPayment"
+                            asp-action="Pay"
+                            asp-route-id="@booking.Id"
+                            class="btn btn-success w-100 mb-2">
+                                Pay Now (Demo)
                             </a>
+
+                            <form asp-controller="BookingPayment"
+                            asp-action="CheckIn"
+                            method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                name="bookingRequestId"
+                                value="@booking.Id" />
+
+                                <button type="submit"
+                                class="btn btn-primary w-100">
+                                    Check In
+                                </button>
+                            </form>
                         }
+                        else if (booking.Status == BookingStatus.CheckedIn)
+                        {
+                            <div class="alert alert-success mb-0">
+                                You have successfully checked in.
+                            </div>
+                        }
+                        else if (booking.Status == BookingStatus.Pending)
+                        {
+                            <div class="alert alert-warning mb-0">
+                                Please wait for the host to approve your booking
+                                before making payment.
+                            </div>
+                        }
+                        else if (booking.Status == BookingStatus.Rejected)
+                        {
+                            <div class="alert alert-danger mb-0">
+                                This booking request was rejected.
+                            </div>                    
+                        }
+
                     </div>
                 </div>
             </div>

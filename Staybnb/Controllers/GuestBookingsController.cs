@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Staybnb.Data;
 using Staybnb.Models;
+using System.Security.Claims;
 
 namespace Staybnb.Controllers
 {
@@ -19,8 +20,17 @@ namespace Staybnb.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            var guestId = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(guestId))
+            {
+                return Challenge();
+            }
+
             var bookings = await _context.BookingRequests
                 .Include(b => b.PropertyApplication)
+                .Where(b => b.GuestId == guestId)
                 .OrderByDescending(b => b.CheckIn)
                 .ToListAsync();
 

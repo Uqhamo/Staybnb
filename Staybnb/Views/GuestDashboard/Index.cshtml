@@ -5,18 +5,19 @@
 <style>
     .stay-layout {
         display: flex;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 24px;
         margin: 20px 0;
     }
 
     .stay-sidebar {
-        width: 220px;
-        min-width: 220px;
+        width: 230px;
+        min-width: 230px;
         background: #172554;
         color: white;
-        padding: 18px 12px;
+        padding: 20px 12px;
         border-radius: 12px;
+        align-self: stretch;
     }
 
         .stay-sidebar h4 {
@@ -29,10 +30,9 @@
             display: block;
             color: #dbeafe;
             text-decoration: none;
-            padding: 10px 12px;
-            margin-bottom: 4px;
+            padding: 11px 12px;
+            margin-bottom: 5px;
             border-radius: 7px;
-            font-size: 14px;
         }
 
             .stay-sidebar a:hover,
@@ -46,6 +46,18 @@
         min-width: 0;
     }
 
+    .stat-card {
+        border: 0;
+        border-radius: 12px;
+        height: 100%;
+    }
+
+    .stat-number {
+        font-size: 30px;
+        font-weight: bold;
+        color: #172554;
+    }
+
     @@media (max-width: 768px) {
         .stay-layout {
             flex-direction: column;
@@ -53,117 +65,151 @@
 
         .stay-sidebar {
             width: 100%;
+            min-width: 0;
         }
     }
 </style>
 
-<div class="stay-layout">
+<div class="container-fluid">
+    <div class="stay-layout">
 
-    <aside class="stay-sidebar">
-        <h4>Staybnb</h4>
+        <aside class="stay-sidebar">
+            <h4>Staybnb</h4>
+            <hr />
 
-        <a asp-controller="GuestDashBoard" asp-action="Index"
-           class="active">Dashboard</a>
+            <a asp-controller="GuestDashBoard"
+               asp-action="Index"
+               class="active">Overview</a>
 
-        <a asp-controller="Property" asp-action="Index">
-            Find a Stay
-        </a>
+            <a asp-controller="Property"
+               asp-action="Index">Find a Stay</a>
 
-        <a asp-controller="GuestBookings" asp-action="Index">
-             My Bookings
-        </a>
+            <a asp-controller="GuestBookings"
+               asp-action="Index">My Bookings</a>
 
-        <a asp-controller="HostRegistration" asp-action="Index">
-            Become a Host
-        </a>
+            <a asp-controller="HostRegistration"
+               asp-action="Index">Become a Host</a>
 
-        <a href="#messages">Messages</a>
-        <a href="#notifications">Notifications</a>
-        <a asp-controller="Login" asp-action="Index">My Profile / Sign In</a>
+            <a asp-controller="Messaging"
+               asp-action="Index">Messages</a>
 
-        <form asp-area="Identity"
-              asp-page="/Account/Logout"
-              asp-route-returnUrl="/"
-              method="post">
-            <button type="submit"
-                    class="btn btn-link text-decoration-none w-100 text-start"
-                    style="color:#fecaca; padding:10px 12px;">
-                Logout
-            </button>
-        </form>
-    </aside>
+            <a asp-controller="Notifications"
+               asp-action="Index">Notifications</a>
 
-    <main class="stay-main">
-        <h2 class="mb-2">Welcome to Staybnb!</h2>
-        <p class="text-muted">
-            Find your next stay or manage your reservations.
-        </p>
+            <hr />
 
-        <div class="row g-4 mt-2">
+            <form asp-area="Identity"
+                  asp-page="/Account/Logout"
+                  asp-route-returnUrl="/"
+                  method="post">
+                <button type="submit"
+                        class="btn btn-link text-decoration-none w-100 text-start"
+                        style="color:#fecaca;">
+                    Logout
+                </button>
+            </form>
+        </aside>
 
-            <div class="col-md-6">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5>Find a Place to Stay</h5>
-                        <p class="text-muted">
-                            Browse available houses and accommodation.
-                        </p>
-                        <a asp-controller="Property"
-                           asp-action="Index"
-                           class="btn btn-primary">
-                            Browse Houses
-                        </a>
+        <main class="stay-main">
+            <div class="mb-4">
+                <h2>Guest Overview</h2>
+                <p class="text-muted">
+                    Welcome to Staybnb! Manage your stays and booking requests.
+                </p>
+            </div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["Success"]
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["Error"]
+                </div>
+            }
+
+            <div class="row g-3 mb-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card shadow-sm stat-card">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Total Bookings</p>
+                            <div class="stat-number">
+                                @ViewBag.TotalBookings
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card shadow-sm stat-card">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Pending</p>
+                            <div class="stat-number">
+                                @ViewBag.PendingBookings
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card shadow-sm stat-card">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Approved</p>
+                            <div class="stat-number">
+                                @ViewBag.ApprovedBookings
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card shadow-sm stat-card">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Rejected</p>
+                            <div class="stat-number">
+                                @ViewBag.RejectedBookings
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5>My Bookings</h5>
-                        <p class="text-muted">
-                            Check your booking requests and reservation status.
-                        </p>
-                        <a asp-controller="GuestBookings"
-                           asp-action="Index"
-                           class="btn btn-outline-primary">
-                            View My Bookings
-                        </a>
-                    </div>
+            <div class="card shadow-sm border-0 p-4 mb-4">
+                <h4>Find your next stay</h4>
+                <p class="text-muted">
+                    Explore available properties and choose accommodation
+                    that suits your needs.
+                </p>
+                <div>
+                    <a asp-controller="Property"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        Browse Properties
+                    </a>
+
+                    <a asp-controller="GuestBookings"
+                       asp-action="Index"
+                       class="btn btn-outline-primary ms-2">
+                        View My Bookings
+                    </a>
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5>Become a Host</h5>
-                        <p class="text-muted">
-                            Apply to list your property on Staybnb.
-                        </p>
-                        <a asp-controller="HostRegistration"
-                           asp-action="Index"
-                           class="btn btn-danger">
-                            Become a Host
-                        </a>
-                    </div>
-                </div>
+            <div class="card shadow-sm border-0 p-4">
+                <h4>Become a Host</h4>
+                <p class="text-muted">
+                    Have a property to rent? Apply to list it on Staybnb.
+                </p>
+                <a asp-controller="HostRegistration"
+                   asp-action="Index"
+                   class="btn btn-outline-danger">
+                    Become a Host
+                </a>
             </div>
-
-        </div>
-
-        <div id="messages" class="card shadow-sm p-3 mt-4">
-            <h5>Messages</h5>
-            <p class="text-muted mb-0">
-                Your messages will appear here when messaging is connected.
-            </p>
-        </div>
-
-        <div id="notifications" class="card shadow-sm p-3 mt-3">
-            <h5>Notifications</h5>
-            <p class="text-muted mb-0">
-                Your notifications will appear here when connected.
-            </p>
-        </div>
-    </main>
-
+        </main>
+    </div>
 </div>

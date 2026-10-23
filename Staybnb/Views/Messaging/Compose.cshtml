@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "New Message";
+}
+
+<div class="container py-4" style="max-width: 650px;">
+    <h2 class="mb-4">Send a Message</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    <form asp-controller="Messages"
+          asp-action="Compose"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <div class="mb-3">
+            <label for="receiverEmail" class="form-label">
+                Recipient's Email
+            </label>
+
+            <input type="email"
+                   id="receiverEmail"
+                   name="receiverEmail"
+                   class="form-control"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label for="subject" class="form-label">Subject</label>
+
+            <input type="text"
+                   id="subject"
+                   name="subject"
+                   class="form-control"
+                   maxlength="200"
+                   required />
+        </div>
+
+        <div class="mb-3">
+            <label for="content" class="form-label">Message</label>
+
+            <textarea id="content"
+                      name="content"
+                      class="form-control"
+                      rows="6"
+                      maxlength="5000"
+                      required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Send Message
+        </button>
+
+        <a asp-controller="Messages"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            Back to Messages
+        </a>
+    </form>
+</div>

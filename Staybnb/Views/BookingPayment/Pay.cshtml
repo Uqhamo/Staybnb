@@ -1,0 +1,60 @@
+﻿@model Staybnb.Models.BookingRequest
+
+@{
+    ViewData["Title"] = "Demo Payment";
+    var nights = (int)ViewBag.Nights;
+    decimal totalPrice = (decimal)ViewBag.TotalPrice;
+}
+
+<h2>Complete Your Booking</h2>
+
+<div class="card p-4">
+    <h4>@Model.PropertyApplication?.Title</h4>
+
+    <p>
+        <strong>Check-in:</strong>
+        @Model.CheckIn.ToString("dd MMM yyyy")
+    </p>
+
+    <p>
+        <strong>Check-out:</strong>
+        @Model.CheckOut.ToString("dd MMM yyyy")
+    </p>
+
+    <p><strong>Number of nights:</strong> @nights</p>
+
+    <p>
+        <strong>Price per night:</strong>
+        R @Model.PropertyApplication?.Price.ToString("N2")
+    </p>
+
+    <hr />
+
+    <h4>Total: R @totalPrice.ToString("N2")</h4>
+
+    <div class="alert alert-info mt-3">
+        <strong>Payment only.</strong>
+        This a successful payment. 
+    </div>
+
+    <form asp-controller="BookingPayment"
+          asp-action="PayDemo"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden"
+               name="bookingRequestId"
+               value="@Model.Id" />
+
+        <button type="submit" class="btn btn-success">
+            Pay Now 
+        </button>
+    </form>
+
+    <a asp-controller="GuestBookings"
+       asp-action="Index"
+       class="btn btn-secondary mt-2">
+        Back to My Bookings
+    </a>
+</div>

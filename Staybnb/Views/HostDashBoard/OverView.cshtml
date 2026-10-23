@@ -2,102 +2,328 @@
 
 @{
     ViewData["Title"] = "Host Dashboard";
+
+    var properties = ViewBag.Properties as List<PropertyApplication>
+        ?? new List<PropertyApplication>();
 }
 
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2>Host Dashboard</h2>
-            <p class="text-muted">
-                Manage your properties and applications.
-            </p>
-        </div>
-
-        <a asp-controller="Property"
-           asp-action="BecomeAHost"
-           class="btn btn-danger">
-            + Add a Property
-        </a>
-    </div>
-
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["Success"]
-        </div>
+<style>
+    .host-layout {
+        display: flex;
+        align-items: stretch;
+        gap: 24px;
+        margin: 20px 0;
     }
 
-    @if (ViewBag.Properties == null ||
-         ((IEnumerable<PropertyApplication>)ViewBag.Properties).Any() == false)
-    {
-        <div class="card shadow-sm p-4 text-center">
-            <h4>No properties yet</h4>
-            <p class="text-muted">
-                Submit your first property to get started.
-                Your application will need administrator approval.
-            </p>
+    .host-sidebar {
+        width: 230px;
+        min-width: 230px;
+        background: #172554;
+        color: white;
+        padding: 20px 12px;
+        border-radius: 12px;
+    }
 
-            <div>
+        .host-sidebar h4 {
+            padding: 8px 12px 18px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .host-sidebar a {
+            display: block;
+            color: #dbeafe;
+            text-decoration: none;
+            padding: 11px 12px;
+            margin-bottom: 5px;
+            border-radius: 7px;
+        }
+
+            .host-sidebar a:hover,
+            .host-sidebar a.active {
+                background: #2563eb;
+                color: white;
+            }
+
+    .host-main {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .host-stat {
+        border: 0;
+        border-radius: 12px;
+        height: 100%;
+    }
+
+    .host-stat-number {
+        font-size: 30px;
+        font-weight: bold;
+        color: #172554;
+    }
+
+    @@media (max-width: 768px) {
+        .host-layout {
+            flex-direction: column;
+        }
+
+        .host-sidebar {
+            width: 100%;
+            min-width: 0;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="host-layout">
+
+        <aside class="host-sidebar">
+            <h4>Staybnb</h4>
+            <hr />
+
+            <a asp-controller="HostDashboard"
+               asp-action="Overview"
+               class="active">Overview</a>
+
+            <a asp-controller="HostDashboard"
+               asp-action="MyProperties">My Properties</a>
+
+            <a asp-controller="Property"
+               asp-action="BecomeAHost">Add Property</a>
+
+            <a asp-controller="Property"
+               asp-action="Index">Browse Properties</a>
+
+            <hr />
+
+            <form asp-area="Identity"
+                  asp-page="/Account/Logout"
+                  asp-route-returnUrl="/"
+                  method="post">
+                <button type="submit"
+                        class="btn btn-link text-decoration-none w-100 text-start"
+                        style="color:#fecaca;">
+                    Logout
+                </button>
+            </form>
+        </aside>
+
+        <main class="host-main">
+
+            <div class="d-flex flex-wrap justify-content-between
+                align-items-center gap-3 mb-4">
+                <div>
+                    <h2>Host Overview</h2>
+                    <p class="text-muted">
+                        Manage your properties and booking requests.
+                    </p>
+                </div>
+
                 <a asp-controller="Property"
                    asp-action="BecomeAHost"
-                   class="btn btn-danger">
-                    Submit Your First Property
+                   class="btn btn-primary">
+                    + Add a Property
                 </a>
             </div>
-        </div>
-    }
-    else
-    {
-        <div class="row g-3">
-            @foreach (var property in
-                (IEnumerable<PropertyApplication>)ViewBag.Properties)
+
+            @if (TempData["Success"] != null)
             {
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                @property.Title
-                            </h5>
+                <div class="alert alert-success">
+                    @TempData["Success"]
+                </div>
+            }
 
-                            <p class="text-muted">
-                                @property.Address
-                            </p>
-
-                            <p>
-                                Status:
-                                @if (property.Status == ApplicationStatus.Approved)
-                                {
-                                    <span class="badge bg-success">
-                                        Approved
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-warning text-dark">
-                                        Pending approval
-                                    </span>
-                                }
-                            </p>
-
-                            @if (property.Status == ApplicationStatus.Approved)
-                            {
-                                <a asp-controller="HostDashboard"
-                                   asp-action="Index"
-                                   asp-route-propertyId="@property.Id"
-                                   class="btn btn-outline-danger">
-                                    Manage Property
-                                </a>
-                            }
-                            else
-                            {
-                                <span class="text-muted">
-                                    Available after approval
-                                </span>
-                            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["Error"]
+                </div>
+            }
+            <div class="col-sm-6 col-xl-3">
+                <div class="card shadow-sm host-stat">
+                    <div class="card-body">
+                        <p class="text-muted mb-1">Total Earnings</p>
+                        <div class="host-stat-number">
+                            @(((decimal)(ViewBag.Earnings ?? 0m))
+                                .ToString("C", System.Globalization.CultureInfo.GetCultureInfo("en-ZA")))
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="card shadow-sm host-stat">
+                    <div class="card-body">
+                        <p class="text-muted mb-1">Average Rating</p>
+                        <div class="host-stat-number">
+                            @(((double)(ViewBag.AverageRating ?? 0.0)).ToString("0.0")) / 5
+                            <span style="color: #f59e0b;">★</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="card shadow-sm host-stat">
+                    <div class="card-body">
+                        <p class="text-muted mb-1">Approved Reviews</p>
+                        <div class="host-stat-number">
+                            @ViewBag.ReviewCount
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-3 mb-4">
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card shadow-sm host-stat">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Total Properties</p>
+                            <div class="host-stat-number">
+                                @ViewBag.TotalProperties
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card shadow-sm host-stat">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Approved Properties</p>
+                            <div class="host-stat-number">
+                                @ViewBag.ApprovedProperties
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card shadow-sm host-stat">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Pending Requests</p>
+                            <div class="host-stat-number">
+                                @ViewBag.PendingRequests
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xl-3">
+                    <div class="card shadow-sm host-stat">
+                        <div class="card-body">
+                            <p class="text-muted mb-1">Approved Requests</p>
+                            <div class="host-stat-number">
+                                @ViewBag.ApprovedRequests
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between
+                align-items-center mb-3">
+                <h4>My Properties</h4>
+                <a asp-controller="HostDashboard"
+                   asp-action="MyProperties"
+                   class="text-decoration-none">
+                    View all
+                </a>
+            </div>
+
+            @if (!properties.Any())
+            {
+                <div class="card shadow-sm border-0 p-4 text-center">
+                    <h5>No properties yet</h5>
+                    <p class="text-muted">
+                        Submit your first property to get started.
+                        It must be approved before it becomes available.
+                    </p>
+
+                    <a asp-controller="Property"
+                       asp-action="BecomeAHost"
+                       class="btn btn-primary mx-auto">
+                        Submit Your First Property
+                    </a>
+                </div>
             }
-        </div>
-    }
+            else
+            {
+                <div class="row g-3">
+                    @foreach (var property in properties)
+                    {
+                        <div class="col-md-6 col-xl-4">
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        @property.Title
+                                    </h5>
+
+                                    <p class="text-muted">
+                                        @property.Address
+                                    </p>
+
+                                    <p>
+                                        <strong>Price:</strong>
+                                        R @property.Price.ToString("N2") / night
+                                    </p>
+
+                                    <p>
+                                        <strong>Status:</strong>
+
+                                        @if (property.Status ==
+                                            ApplicationStatus.Approved)
+                                        {
+                                            <span class="badge bg-success">
+                                                Approved
+                                            </span>
+                                        }
+                                        else if (property.Status ==
+                                            ApplicationStatus.Pending)
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                Pending
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">
+                                                Rejected
+                                            </span>
+                                        }
+                                    </p>
+
+                                    @if (property.Status ==
+                                        ApplicationStatus.Approved)
+                                    {
+                                        <a asp-controller="HostDashboard"
+                                           asp-action="Index"
+                                           asp-route-propertyId="@property.Id"
+                                           class="btn btn-outline-primary btn-sm">
+                                            Manage Property
+                                        </a>
+
+                                        <a asp-controller="HostDashboard"
+                                           asp-action="BookingRequests"
+                                           asp-route-propertyId="@property.Id"
+                                           class="btn btn-primary btn-sm mt-2">
+                                            Booking Requests
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <p class="text-muted small">
+                                            Management options are available
+                                            after approval.
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+        </main>
+    </div>
 </div>

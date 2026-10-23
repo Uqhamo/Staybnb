@@ -46,7 +46,7 @@ namespace Staybnb.Controllers
                 UserEmail = User.Identity?.Name ?? string.Empty,
                 Action = $"Application_{app.Status}",
                 Details = $"Property ID {app.Id} evaluated by admin",
-                IpAddres = HttpContext.Connection.RemoteIpAddress?.ToString()
+                IpAddres = HttpContext.Connection.RemoteIpAddress?.ToString() ??""
             };
 
             _context.ActivityLogs.Add(log);

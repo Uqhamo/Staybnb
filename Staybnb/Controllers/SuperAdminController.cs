@@ -50,13 +50,13 @@ namespace Staybnb.Controllers
         public async Task<IActionResult> PropertyApprovals()
         {
             var properties = await _context.PropertyApplications
-                .Where(p => p.Status == ApplicationStatus.Pending)
+                .OrderByDescending(p => p.Id)
                 .ToListAsync();
 
             return View(properties);
         }
 
-       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApproveProperty(int id)

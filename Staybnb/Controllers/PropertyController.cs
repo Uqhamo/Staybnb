@@ -153,7 +153,39 @@ namespace Staybnb.Controllers
                 return NotFound();
             }
 
+            
+            var reviews = await _context.Reviews
+                .Where(r =>
+                    r.PropertyApplicationId == id &&
+                    r.IsApproved)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+            ViewBag.ApprovedReviews = reviews;
+
+            
+            var guestId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var hasCheckedIn = false;
+            var hasReviewed = false;
+
+            if (!string.IsNullOrEmpty(guestId))
+            {
+                hasCheckedIn = await _context.BookingRequests
+                    .AnyAsync(b =>
+                        b.PropertyApplicationId == id &&
+                        b.GuestId == guestId &&
+                        b.Status == BookingStatus.CheckedIn);
+
+                hasReviewed = await _context.Reviews
+                    .AnyAsync(r =>
+                        r.PropertyApplicationId == id &&
+                        r.GuestId == guestId);
+            }
+
+            ViewBag.CanReview = hasCheckedIn && !hasReviewed;
+
             return View(property);
-        } 
+        }
     }
     }
