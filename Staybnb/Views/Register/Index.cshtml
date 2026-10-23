@@ -10,35 +10,60 @@
         <p class="text-danger">@ViewBag.Error</p>
     }
 
-    <form asp-controller="Register" asp-action="Index" method="post">
+    <form asp-controller="Register"
+          asp-action="Index"
+          method="post">
+
         @Html.AntiForgeryToken()
 
         <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" name="email"
-                   class="form-control" required />
+            <label for="email" class="form-label">Email</label>
+            <input type="email"
+                   id="email"
+                   name="email"
+                   class="form-control"
+                   required />
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input type="password" name="password"
-                   class="form-control" required />
+            <label for="password" class="form-label">Password</label>
+            <input type="password"
+                   id="password"
+                   name="password"
+                   class="form-control"
+                   required />
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Confirm Password</label>
-            <input type="password" name="confirmPassword"
-                   class="form-control" required />
+            <label for="confirmPassword" class="form-label">
+                Confirm Password
+            </label>
+            <input type="password"
+                   id="confirmPassword"
+                   name="confirmPassword"
+                   class="form-control"
+                   required />
         </div>
-        <div class="mb-3">
-            <label class="form-label">I want to register as:</label>
 
-            <select name="accountType" class="form-select" required>
+        <div class="mb-3">
+            <label for="accountType" class="form-label">
+                I want to register as:
+            </label>
+
+            <select id="accountType"
+                    name="accountType"
+                    class="form-select"
+                    required>
                 <option value="">Choose account type</option>
-                <option value="Guest">Guest - I want to book properties</option>
-                <option value="Host">Host - I want to list my property</option>
+                <option value="Guest">
+                    Guest - I want to book properties
+                </option>
+                <option value="Host">
+                    Host - I want to list my property
+                </option>
             </select>
         </div>
+
         <button type="submit" class="btn btn-primary w-100">
             Register
         </button>
@@ -48,6 +73,4 @@
         Already registered?
         <a asp-controller="Login" asp-action="Index">Login</a>
     </p>
-
 </div>
-

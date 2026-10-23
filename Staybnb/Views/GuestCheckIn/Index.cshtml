@@ -1,0 +1,42 @@
+﻿@model Staybnb.Models.BookingRequest
+
+@{
+    ViewData["Title"] = "Guest Check-in";
+}
+
+<div class="container py-4">
+    <div class="card shadow-sm p-4" style="max-width: 650px;">
+        <h2>Guest Check-in</h2>
+
+        <p class="text-muted">
+            Review your approved reservation before check-in.
+        </p>
+
+        <hr />
+
+        <p>
+            <strong>Property:</strong>
+            @(Model.PropertyApplication?.Title ?? "Property")
+        </p>
+
+        <p>
+            <strong>Check-in:</strong>
+            @Model.CheckIn.ToString("dd MMM yyyy")
+        </p>
+
+        <p>
+            <strong>Check-out:</strong>
+            @Model.CheckOut.ToString("dd MMM yyyy")
+        </p>
+
+        <p>
+            <strong>Status:</strong> @Model.Status
+        </p>
+
+        <a asp-controller="GuestBookings"
+           asp-action="Index"
+           class="btn btn-outline-primary">
+            Back to My Bookings
+        </a>
+    </div>
+</div>

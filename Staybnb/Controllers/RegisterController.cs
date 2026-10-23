@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace Staybnb.Controllers
 {
@@ -17,16 +18,21 @@ namespace Staybnb.Controllers
             _signInManager = signInManager;
         }
 
+        
         [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(
-            string email, string password, string confirmPassword,string accountType)
+            string email,
+            string password,
+            string confirmPassword,
+            string accountType)
         {
             if (string.IsNullOrWhiteSpace(email) ||
                 string.IsNullOrWhiteSpace(password))
@@ -38,6 +44,12 @@ namespace Staybnb.Controllers
             if (password != confirmPassword)
             {
                 ViewBag.Error = "Passwords do not match.";
+                return View();
+            }
+
+            if (accountType != "Guest" && accountType != "Host")
+            {
+                ViewBag.Error = "Please select a valid account type.";
                 return View();
             }
 
@@ -57,37 +69,37 @@ namespace Staybnb.Controllers
 
             var result = await _userManager.CreateAsync(user, password);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                if (accountType == "Guest")
-                {
-                    await _userManager.AddToRoleAsync(user, "Guest");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                ViewBag.Error = string.Join(
+                    " ", result.Errors.Select(e => e.Description));
 
-                    return RedirectToAction("Index", "HostRegistration");
-                }
-
-                if (accountType == "Host")
-                {
-                    var roleResult = await _userManager.AddToRoleAsync(user, "Guest");
-                    if (!roleResult.Succeeded)
-                    {
-                        await _userManager.DeleteAsync(user);
-
-                        ViewBag.Error = string.Join(" ",
-                            roleResult.Errors.Select(e => e.Description));
-
-                        return View();
-                    }
-                    //await _userManager.AddToRoleAsync(user, "Guest");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-
-                    return RedirectToAction("Index", "HostRegistration");
-                }
+                return View();
             }
 
-            ViewBag.Error = string.Join(" ", result.Errors.Select(e => e.Description));
-            return View();
+            
+            var roleResult = await _userManager.AddToRoleAsync(user, "Guest");
+
+            if (!roleResult.Succeeded)
+            {
+                await _userManager.DeleteAsync(user);
+
+                ViewBag.Error = string.Join(
+                    " ", roleResult.Errors.Select(e => e.Description));
+
+                return View();
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            
+            if (accountType == "Host")
+            {
+                return RedirectToAction("Index", "HostRegistration");
+            }
+
+            
+            return RedirectToAction("Index", "GuestDashBoard");
         }
     }
 }

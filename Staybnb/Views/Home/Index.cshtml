@@ -15,22 +15,6 @@
     }
 
     .sidebar {
-        width: 250px;
-        min-width: 250px;
-        background-color: #172554;
-        color: white;
-        padding: 25px 15px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .brand {
-        font-size: 27px;
-        font-weight: bold;
-        padding: 10px 15px 30px;
-    }
-
-    .sidebar {
         width: 220px;
         min-width: 220px;
         height: fit-content;
@@ -67,8 +51,17 @@
 
     .sidebar .logout-link {
         margin-top: 10px;
-        color: #fecaca;
     }
+
+        .sidebar .logout-link button {
+            color: #fecaca;
+        }
+
+            .sidebar .logout-link button:hover {
+                background-color: #2563eb;
+                color: white;
+            }
+
     .dashboard-content {
         flex: 1;
         min-width: 0;
@@ -80,7 +73,7 @@
         padding: 30px;
         border-radius: 16px;
         margin-bottom: 25px;
-        box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
     }
 
     .stat-card,
@@ -90,7 +83,7 @@
         border-radius: 14px;
         padding: 24px;
         height: 100%;
-        box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
     }
 
     .stat-number {
@@ -112,13 +105,11 @@
         .sidebar {
             width: 100%;
             min-width: 0;
+            border-radius: 0 0 12px 12px;
         }
 
-            .sidebar .logout-link {
-                margin-top: 10px;
-            }
-
         .dashboard-content {
+            width: 100%;
             padding: 20px;
         }
     }
@@ -126,7 +117,7 @@
 
 <div class="dashboard-wrapper">
 
-   
+    
     <aside class="sidebar">
 
         <div class="brand">
@@ -137,7 +128,7 @@
             <a asp-controller="Home"
                asp-action="Index"
                class="active">
-               Dashboard
+                Dashboard
             </a>
 
             <a asp-controller="Property"
@@ -145,12 +136,12 @@
                 My Properties
             </a>
 
-            <a href="#booking-requests">
+            <a href="#booking-request>
                 Booking Requests
             </a>
 
             <a href="#earnings">
-                 Earnings
+                Earnings
             </a>
 
             <a href="#reviews">
@@ -164,21 +155,19 @@
             <a href="#notifications">
                 Notifications
             </a>
-
         </nav>
 
-        <form asp-area="Identity"
-              asp-page="/Account/Logout"
-              asp-route-returnUrl="/"
+        <form asp-controller="Login"
+              asp-action="Logout"
               method="post"
               class="logout-link">
 
+            @Html.AntiForgeryToken()
+
             <button type="submit"
-                    class="btn text-start w-100"
-                    style="color: #fecaca;">
+                    class="btn text-start w-100">
                 Logout
             </button>
-
         </form>
 
     </aside>
@@ -186,7 +175,9 @@
    
     <main class="dashboard-content">
 
+       
         <div class="welcome-card">
+
             <h1 class="fw-bold">Welcome to Staybnb!</h1>
 
             <p class="text-muted mb-4">
@@ -194,25 +185,38 @@
                 and keep track of your hosting activities.
             </p>
 
-            <a asp-controller="Property"
-               asp-action="Index"
-               class="btn btn-primary">
-                Explore Properties
-            </a>
+            <div class="d-flex flex-wrap gap-2">
 
-            <a asp-controller="HostRegistration"
-               asp-action="Index"
-               class="btn btn-outline-primary ms-2">
-                Become a Host
-            </a>
-            <a asp-controller="Login"
-               asp-action="Index"
-               class="btn btn-success mb-2">
-                Sign In
-            </a>
+                <a asp-controller="Property"
+                   asp-action="Index"
+                   class="btn btn-primary">
+                    Explore Properties
+                </a>
+
+                <a asp-controller="HostRegistration"
+                   asp-action="Index"
+                   class="btn btn-outline-primary">
+                    Become a Host
+                </a>
+
+                <a asp-controller="Login"
+                   asp-action="Index"
+                   class="btn btn-success">
+                    Sign In
+                </a>
+
+                
+                <a asp-controller="Register"
+                   asp-action="Index"
+                   class="btn btn-outline-success">
+                    Create an Account
+                </a>
+
+            </div>
+
         </div>
 
-        
+       
         <h4 class="fw-bold mb-3">Overview</h4>
 
         <div class="row g-4 mb-4">
@@ -263,18 +267,22 @@
 
         </div>
 
-        
+       
         <h4 class="fw-bold mb-3">Quick Actions</h4>
 
         <div class="row g-4">
 
             <div class="col-md-6">
                 <div class="action-card">
-                    <div class="dashboard-icon">🔍</div>
+                    <div class="dashboard-icon"></div>
+
                     <h5>Find a Stay</h5>
+
                     <p class="text-muted">
-                        Browse available accommodation and view property details.
+                        Browse available accommodation and view
+                        property details.
                     </p>
+
                     <a asp-controller="Property"
                        asp-action="Index"
                        class="btn btn-primary">
@@ -286,10 +294,14 @@
             <div class="col-md-6">
                 <div class="action-card">
                     <div class="dashboard-icon"></div>
+
                     <h5>Become a Host</h5>
+
                     <p class="text-muted">
-                        Apply to list your property and start hosting guests.
+                        Apply to list your property and start
+                        hosting guests.
                     </p>
+
                     <a asp-controller="HostRegistration"
                        asp-action="Index"
                        class="btn btn-primary">
@@ -300,5 +312,6 @@
 
         </div>
 
-        
-        
+    </main>
+
+</div>
